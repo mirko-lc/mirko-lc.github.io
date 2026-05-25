@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "HTB - NombreDeMáquina"
+title: "HTB - CAP"
 date: 2026-05-25
 categories: writeups
 ---
