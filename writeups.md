@@ -4,7 +4,7 @@ title: writeups
 permalink: /writeups/
 ---
 ## CTF Writeups & Security Research
-Aquí iré publicando mis writeups de CTFs, máquinas de HackTheBox, TryHackMe, y otros retos.
+Aquí iré publicando mis writeups HackTheBox, TryHackMe, y Dockerlabs.
 
 {% for post in site.posts %}
   {% if post.categories contains 'writeups' %}
