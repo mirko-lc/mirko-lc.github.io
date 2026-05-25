@@ -1,3 +1,10 @@
+---
+layout: post
+title: "HTB - NombreDeMáquina"
+date: 2026-05-25
+categories: writeups
+---
+
 # Resolución Máquina CAP
 
 **Autor:** Mirko  
