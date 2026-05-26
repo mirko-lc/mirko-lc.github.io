@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "DockerLabs - Domain"
+title: "Dockerlabs - Domain"
 date: 2026-05-25
 categories: writeups
 ---
@@ -22,8 +22,9 @@ categories: writeups
 *Imagen: Domain.PNG*
 
 ## Reconocimiento Inicial
+### Escaneo de Puertos
 
-<p># Reconocimiento Inicial</p><p>## Escaneo de Puertos<br></p><p>Comenzamos con un típico escaneo rápido y completo de nmap para identificar los servicios expuestos</p><p>utilizando el siguiente comando:<br><br>nmap -p- -sS -Pn -n --min-rate=5000 (IP) -oN fastscan.txt</p><p></p><p>Descubrimos los puertos 80,139 y 445</p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+<p>Comenzamos con un típico escaneo rápido y completo de nmap para identificar los servicios expuestos</p><p>utilizando el siguiente comando:<br><br>nmap -p- -sS -Pn -n --min-rate=5000 (IP) -oN fastscan.txt</p><p></p><p>Descubrimos los puertos 80,139 y 445</p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -33,8 +34,9 @@ categories: writeups
 ---
 
 ## Análisis de vectores
+### Puerto 80
 
-<p></p><p># Análisis de vectores</p><p>## Puerto 80<br></p><p>Dado que hallamos un servicio http corriendo en el puerto 80, nos conectamos a través del navegador</p><p>para averiguar con que nos estábamos enfrentando.</p><p></p><p>Al ingresar via firefox nos damos cuenta que se trata de una página con un texto, que no parece tener funcionalidades.</p><p>Tras intentar buscar algún vector en el código fuente y no encontrar nada que el mismo texto, se descartó la idea de atacar a la aplicación web. </p><p></p>
+<p>Dado que hallamos un servicio http corriendo en el puerto 80, nos conectamos a través del navegador</p><p>para averiguar con que nos estábamos enfrentando.</p><p></p><p>Al ingresar via firefox nos damos cuenta que se trata de una página con un texto, que no parece tener funcionalidades.</p><p>Tras intentar buscar algún vector en el código fuente y no encontrar nada que el mismo texto, se descartó la idea de atacar a la aplicación web. </p><p></p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -43,9 +45,9 @@ categories: writeups
 
 ---
 
-## Vector de ataque
+## Vector de ataque SMB | Samba
 
-<p></p><p>## SMB | Samba<br></p><p>La página parecía estar dandonos la pista de cúal sería el vector para esta máquina.</p><p>Por lo tanto lo siguiente fue enumerar la máquina victima utilizando la herramienta enum4linux.</p><p>Esta herramienta se utiliza para enumerar información de entornos Samba y Windows mediante SMB.</p><p></p><p>Uso: enum4linux (IP)</p><p></p><p>Una vez ejecutado el comando, vemos que se nos reporta la exitencia de dos usuarios, bob y james.</p>
+<p>La página parecía estar dandonos la pista de cúal sería el vector para esta máquina.</p><p>Por lo tanto lo siguiente fue enumerar la máquina victima utilizando la herramienta enum4linux.</p><p>Esta herramienta se utiliza para enumerar información de entornos Samba y Windows mediante SMB.</p><p></p><p>Uso: enum4linux (IP)</p><p></p><p>Una vez ejecutado el comando, vemos que se nos reporta la exitencia de dos usuarios, bob y james.</p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -56,7 +58,7 @@ categories: writeups
 
 ## Intrusión
 
-<p></p><p>## Intrusión</p><p></p><p>Ahora que teniamos usuarios válidos, podíamos probar con un ataque de fuerza bruta al servicio en el puerto 445.</p><p>Utilizamos netexec para automatizar el ataque por diccionario utilizando el usuario bob.</p><p>El diccionario que se empleó fue el rockyou.txt.</p><p>Se empleo el parametro --ignore-pw-decoding para evitar errores en el procedimiento, en este caso fue necesario.</p><p></p><p>Después de un rato, la tool encontró la contraseña correcta para el usuario bob.</p><p>Esta fue "star".</p>
+<p>Ahora que teniamos usuarios válidos, podíamos probar con un ataque de fuerza bruta al servicio en el puerto 445.</p><p>Utilizamos netexec para automatizar el ataque por diccionario utilizando el usuario bob.</p><p>El diccionario que se empleó fue el rockyou.txt.</p><p>Se empleo el parametro --ignore-pw-decoding para evitar errores en el procedimiento, en este caso fue necesario.</p><p></p><p>Después de un rato, la tool encontró la contraseña correcta para el usuario bob.</p><p>Esta fue "star".</p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -70,7 +72,7 @@ categories: writeups
 
 ## Permisos de escritura
 
-<p>## Permisos de escritura<br></p><p>Al utilizar la herramienta <em>smbmap</em> proporcionando el usuario bob y la contraseña que habiamos encontrado</p><p>se hizo un reconocimiento del entorno samba, mediante el cual se concluyo que solo había un directorio </p><p>que podía ser una ruta de ataque, para el cual teniamos permiso de escritura.</p><p></p><p>Se llamaba "html" lo que sugería que podría ser donde se alojaba la página a la que accedimos al principio.</p><p>De ser así y al poder escribir en este directorio, podriamos incluir </p><p>un archivo malicioso al que acceder mediante el navegador.</p><p></p><p></p>
+<p>Al utilizar la herramienta <em>smbmap</em> proporcionando el usuario bob y la contraseña que habiamos encontrado</p><p>se hizo un reconocimiento del entorno samba, mediante el cual se concluyo que solo había un directorio </p><p>que podía ser una ruta de ataque, para el cual teniamos permiso de escritura.</p><p></p><p>Se llamaba "html" lo que sugería que podría ser donde se alojaba la página a la que accedimos al principio.</p><p>De ser así y al poder escribir en este directorio, podriamos incluir </p><p>un archivo malicioso al que acceder mediante el navegador.</p><p></p><p></p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -80,8 +82,8 @@ categories: writeups
 ---
 
 ## Pre-Explotación
-
-<p>## Ingreso mediante smbclient</p><p></p><p>Primero ingresamos al servicio mediante smbclient, especificando el usuario bob</p><p>con el siguiente comando:</p><p></p><p>smbclient //[IP]/html -U bob<br><br>Una vez puesta la contraseña, listamos con el comando dir y encontramos un</p><p>index.html, lo que indica que estamos en el directorio donde corre la página.</p><p><br></p><p></p>
+### Ingreso mediante smbclient
+<p>Primero ingresamos al servicio mediante smbclient, especificando el usuario bob</p><p>con el siguiente comando:</p><p></p><p>smbclient //[IP]/html -U bob<br><br>Una vez puesta la contraseña, listamos con el comando dir y encontramos un</p><p>index.html, lo que indica que estamos en el directorio donde corre la página.</p><p><br></p><p></p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -92,7 +94,7 @@ categories: writeups
 
 ## Explotación
 
-<p># Explotación</p><p></p><p>Para observar si la explotación mediante una shell en php es posible, subimos un archivo de prueba.</p><p>Este archivo contenia un clásico webshell en php:</p><p><em>&lt;?php system($_GET["cmd"])?&gt;</em></p><p></p><p>Por lo tanto al ejecutarlo desde el navegador vemos que tenemos ejecución de comandos o RCE (Remote Command Execution).</p>
+<p>Para observar si la explotación mediante una shell en php es posible, subimos un archivo de prueba.</p><p>Este archivo contenia un clásico webshell en php:</p><p><em>&lt;?php system($_GET["cmd"])?&gt;</em></p><p></p><p>Por lo tanto al ejecutarlo desde el navegador vemos que tenemos ejecución de comandos o RCE (Remote Command Execution).</p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -103,7 +105,7 @@ categories: writeups
 
 ## Reverse Shell
 
-<p># Reverse Shell</p><p></p><p>Ahora que sabemos que podemos subir archivos .php y ejecutar comandos, nos interesa enviar una reverse shell a nuestra máquina.</p><p>Para lograrlo estuve buscando shells en php y tras probar múltiples veces ninguna funcionaba, hasta que encontre la de pentestmonkey. </p><p></p><p>Para obtener shells recomiendo la página <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.revshells.com/">https://www.revshells.com/. </a></p><p></p><p>El procedimiento para obtenerla fue:</p><p></p><h2>## Ponernos en escucha</h2><p></p><p>Hacemos un netcat -nlvp 4444 para ponernos en escucha en el puerto 4444.</p><h2></h2><h2>## Configurar el Exploit </h2><p></p><p>Me cree un archivo que llame shell.php, dentor de él utilizando nano pegué la shell de pentestmonkey </p><p>y la modifiqué para que tenga en cuenta mi IP y el puerto 4444.</p><p></p><p>Cuando lo tuve listo lo subí a la carpeta html mediante el comando put  una vez adentro.</p><p></p><p>"put reverse-shell-php.php"</p><h2></h2><p>## Correrlo!</p><p></p><p>Una vez subido el archivo, accedí a él mediante el navegador y listo:</p>
+<p>Ahora que sabemos que podemos subir archivos .php y ejecutar comandos, nos interesa enviar una reverse shell a nuestra máquina.</p><p>Para lograrlo estuve buscando shells en php y tras probar múltiples veces ninguna funcionaba, hasta que encontre la de pentestmonkey. </p><p></p><p>Para obtener shells recomiendo la página <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.revshells.com/">https://www.revshells.com/. </a></p><p></p><p>El procedimiento para obtenerla fue:</p><p></p><h2>Ponernos en escucha</h2><p></p><p>Hacemos un netcat -nlvp 4444 para ponernos en escucha en el puerto 4444.</p><h2></h2><h2>Configurar el Exploit </h2><p></p><p>Me cree un archivo que llame shell.php, dentor de él utilizando nano pegué la shell de pentestmonkey </p><p>y la modifiqué para que tenga en cuenta mi IP y el puerto 4444.</p><p></p><p>Cuando lo tuve listo lo subí a la carpeta html mediante el comando put  una vez adentro.</p><p></p><p>"put reverse-shell-php.php"</p><h2></h2><p>Correrlo!</p><p></p><p>Una vez subido el archivo, accedí a él mediante el navegador y listo:</p>
 
 ### Capturas de Pantalla de la Sección
 
@@ -115,15 +117,15 @@ categories: writeups
 
 ---
 
-## Tratamiento
+## Tratamiento y Escalada de Privilegios
 
-<p># Tratamiento y Escalada de Privilegios</p><p>## Tratando el TTY<br></p><p>Tardé bastante tiempo en esta parte porque ignoraba que para poder seguir la ruta de privesc</p><p>más facil tenia que hacer un tratamiento de TTY. Esto sucede porque al recibir la reverse shell, no contamos con una</p><p>terminal real, por lo que no podemos hacer distintos comandos como usar las flechas de dirección o hacer un ctrl+l.</p><p>Como para escalar privilegios usaremos el binario de nano, hara falta tratar nuestra shell.</p><p></p><p>Por lo que nota mental: hacer el tratamiento TTY siempre que se pueda!</p><p></p><p>## Procedimiento: </p><p></p><p>Esto consta de unos pasos muy sencillos:</p><p></p><p>1- Ejecutamos "script /dev/null -c bash" en la shell. Pondrá "script started"</p><p>2- Hacemos un ctrl+z para suspender el proceso.</p><p>3- Ejecutamos stty raw -echo; fg y ejecutamos</p><p>4- Ejecutamos reset xterm</p><p>5- Ejecutamos export TERM=xter y despues export SHELL=bash</p><p></p><p>Y listo! ya podemos pasar a la siguiente y última fase.</p>
+<h2>Tratando el TTY<br></h2><p>Tardé bastante tiempo en esta parte porque ignoraba que para poder seguir la ruta de privesc</p><p>más facil tenia que hacer un tratamiento de TTY. Esto sucede porque al recibir la reverse shell, no contamos con una</p><p>terminal real, por lo que no podemos hacer distintos comandos como usar las flechas de dirección o hacer un ctrl+l.</p><p>Como para escalar privilegios usaremos el binario de nano, hara falta tratar nuestra shell.</p><p></p><p>Por lo que nota mental: hacer el tratamiento TTY siempre que se pueda!</p><p></p><p>## Procedimiento: </p><p></p><p>Esto consta de unos pasos muy sencillos:</p><p></p><p>1- Ejecutamos "script /dev/null -c bash" en la shell. Pondrá "script started"</p><p>2- Hacemos un ctrl+z para suspender el proceso.</p><p>3- Ejecutamos stty raw -echo; fg y ejecutamos</p><p>4- Ejecutamos reset xterm</p><p>5- Ejecutamos export TERM=xter y despues export SHELL=bash</p><p></p><p>Y listo! ya podemos pasar a la siguiente y última fase.</p>
 
 ---
 
-## Escalada de Privilegios 
+## Pwneando la máquina
 
-<p></p><p># Pwneando la máquina</p><p></p><p>Primero descubrimos que al intentar sudo -l, no contamos con sudo. </p><p>Vamos a listar los binarios con permisos de SUID en el sistema con el siguiente comando:</p><p></p><p>find / type -f -perm -04000 -ls 2&gt;/dev/null</p><p></p><p>Vemos que encontramos al binario nano, que curiosamente se usa para modificar archivos.</p><p>En la página de GTFObins se nos sugiere que podemos usarlo para modificar información.</p><p></p><p>Lo que haremos sera modificar el archivo /etc/passwd para modificar al usuario root.</p><p></p><p><em>/bin/nano /etc/passwd</em></p><p></p><p>Una vez dentro del archivo buscamos la primera :x: despúes del usuario root, que simboliza la contraseña.</p><p>Es tan simple como eliminarla y guardar el archivo, haciendo que quede ::.</p><p></p><p>Al guardarlo y ejecutar el archivo su root, automáticamente somos root, sin necesidad de introducir una contraseña.</p><p></p><p></p><p>PWNED!</p><p></p>
+<p></p><p>Primero descubrimos que al intentar sudo -l, no contamos con sudo. </p><p>Vamos a listar los binarios con permisos de SUID en el sistema con el siguiente comando:</p><p></p><p>find / type -f -perm -04000 -ls 2&gt;/dev/null</p><p></p><p>Vemos que encontramos al binario nano, que curiosamente se usa para modificar archivos.</p><p>En la página de GTFObins se nos sugiere que podemos usarlo para modificar información.</p><p></p><p>Lo que haremos sera modificar el archivo /etc/passwd para modificar al usuario root.</p><p></p><p><em>/bin/nano /etc/passwd</em></p><p></p><p>Una vez dentro del archivo buscamos la primera :x: despúes del usuario root, que simboliza la contraseña.</p><p>Es tan simple como eliminarla y guardar el archivo, haciendo que quede ::.</p><p></p><p>Al guardarlo y ejecutar el archivo su root, automáticamente somos root, sin necesidad de introducir una contraseña.</p><p></p><p></p><p>PWNED!</p><p></p>
 
 ### Capturas de Pantalla de la Sección
 
