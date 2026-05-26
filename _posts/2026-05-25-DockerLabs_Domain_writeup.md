@@ -1,3 +1,10 @@
+---
+layout: post
+title: "HTB - CAP"
+date: 2026-05-12
+categories: writeups
+---
+
 # Resolución Máquina Domain
 
 **Autor:** Mirko  
