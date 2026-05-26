@@ -12,5 +12,6 @@ Para la mayoría, ingresar a una máquina victima usando ftp anónimo no podría
 Sin embargo creo que aveces por estar demasiado metidos en este mundo lleno de protocolos, metodologías, modelos y vulnerabilidades se nos olvida que en realidad, lo que para nosotros es algo fácil
 para una persona que no está dentro de IT o de Ciber es algo completamente extraño y abrumador.
 Darme cuenta de esto me hizo ver el proceso de estudio de la ciberseguridad de otra manera.
-<p></p>Desde que empezé a estudiar ciberseguridad mi "vara de medir" cambió radicalmente. En vez de entender los sistemas operativos como una gran aplicacion con muchas aplicaciones,
-ahora hacía falta entender cosas como los procesos, los permisos, los comandos, el almacenamiento y el transporte de la información.
+<p></p>Desde que empezé a estudiar ciberseguridad mi "vara de medir" cambió radicalmente, y probablemente haya pasado lo mismo con el criterio de todas aquellas personas quienes hemos empezado como usuarios
+y después hemos empezado a estudiar alguna rama de Informática. En vez de entender los sistemas operativos como una gran aplicacion con muchas aplicaciones,
+ahora hacía falta entender cosas como los procesos, los permisos, los comandos, el almacenamiento y el transporte de la información a través de una o más redes.
